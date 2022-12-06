@@ -1,3 +1,8 @@
+To publish changes use command:
+yarn publish --access public
+
+You have to be logged in to npm account cogniteam, see Confluence for details: https://cogniteam.atlassian.net/wiki/spaces/N/pages/573702151/Accounts
+
 # React Split Pane
 
 [![NPM version](https://img.shields.io/npm/v/react-split-pane.svg?style=flat)](https://www.npmjs.com/package/react-split-pane)

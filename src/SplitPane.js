@@ -156,8 +156,10 @@ class SplitPane extends React.Component {
           }
 
           let newMaxSize = maxSize;
+          const splitPane = this.splitPane;
+          const splitPaneWith = splitPane.getBoundingClientRect().width;
+
           if (maxSize !== undefined && maxSize <= 0) {
-            const splitPane = this.splitPane;
             if (split === 'vertical') {
               newMaxSize = splitPane.getBoundingClientRect().width + maxSize;
             } else {
@@ -167,6 +169,10 @@ class SplitPane extends React.Component {
 
           let newSize = size - sizeDelta;
           const newPosition = position - positionDelta;
+
+          if (newSize > splitPaneWith) {
+            newSize = splitPaneWith;
+          }
 
           if (newSize < minSize) {
             newSize = minSize;

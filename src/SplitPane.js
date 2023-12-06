@@ -133,10 +133,19 @@ class SplitPane extends React.Component {
         if (node.getBoundingClientRect) {
           const width = node.getBoundingClientRect().width;
           const height = node.getBoundingClientRect().height;
-          const current =
+
+          const splitPane = this.splitPane;
+          const splitPaneWidth = splitPane.getBoundingClientRect().width;
+
+          let current =
             split === 'vertical'
               ? event.touches[0].clientX
               : event.touches[0].clientY;
+
+          if (split === 'vertical' && current > splitPaneWidth) {
+            current = splitPaneWidth;
+          }
+
           const size = split === 'vertical' ? width : height;
           let positionDelta = position - current;
           if (step) {
@@ -156,8 +165,6 @@ class SplitPane extends React.Component {
           }
 
           let newMaxSize = maxSize;
-          const splitPane = this.splitPane;
-          const splitPaneWith = splitPane.getBoundingClientRect().width;
 
           if (maxSize !== undefined && maxSize <= 0) {
             if (split === 'vertical') {
@@ -168,10 +175,14 @@ class SplitPane extends React.Component {
           }
 
           let newSize = size - sizeDelta;
-          const newPosition = position - positionDelta;
+          let newPosition = position - positionDelta;
 
-          if (newSize > splitPaneWith) {
-            newSize = splitPaneWith;
+          if (newSize > splitPaneWidth || newPosition < 0) {
+            newSize = splitPaneWidth;
+          }
+
+          if (newPosition > splitPaneWidth) {
+            newPosition = splitPaneWidth;
           }
 
           if (newSize < minSize) {
@@ -362,7 +373,6 @@ SplitPane.propTypes = {
   primary: PropTypes.oneOf(['first', 'second']),
   minSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   maxSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  // eslint-disable-next-line react/no-unused-prop-types
   defaultSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   split: PropTypes.oneOf(['vertical', 'horizontal']),

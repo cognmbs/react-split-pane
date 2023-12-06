@@ -11,7 +11,7 @@ const CenterContent = styled('div')`
 `;
 
 export default () => (
-  <SplitPane split="vertical" primary="second" size="50%">
+  <SplitPane split="vertical" primary="second" size="50%" minSize={0}>
     <CenterContent>left</CenterContent>
     <CenterContent>right</CenterContent>
   </SplitPane>

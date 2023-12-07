@@ -197,7 +197,7 @@ class SplitPane extends React.Component {
 
           if (isVerticalSplit) {
             if (newPosition < resizerWidth) {
-              newSize = splitPaneWidth;
+              newSize = splitPaneWidth - resizerWidth;
             }
 
             if (newPosition > splitPaneWidth) {

@@ -95,10 +95,12 @@ class SplitPane extends React.Component {
     const { allowResize, onDragStarted, split } = this.props;
     if (allowResize) {
       unFocus(document, window);
+      const parentPosition = event.target.parentNode.getBoundingClientRect();
+
       const position =
         split === 'vertical'
-          ? event.touches[0].clientX
-          : event.touches[0].clientY;
+          ? event.touches[0].clientX - parentPosition.left
+          : event.touches[0].clientY - parentPosition.top;
 
       if (typeof onDragStarted === 'function') {
         onDragStarted();
@@ -143,11 +145,13 @@ class SplitPane extends React.Component {
           const {
             width: splitPaneWidth,
             height: splitPaneHeight,
+            top: splitPaneTop,
+            left: splitPageLeft,
           } = splitPane.getBoundingClientRect();
 
           let current = isVerticalSplit
-            ? event.touches[0].clientX
-            : event.touches[0].clientY;
+            ? event.touches[0].clientX - splitPageLeft
+            : event.touches[0].clientY - splitPaneTop;
 
           if (isVerticalSplit && current > splitPaneWidth) {
             current = splitPaneWidth;
@@ -187,24 +191,26 @@ class SplitPane extends React.Component {
           let newPosition = position - positionDelta;
 
           if (isVerticalSplit) {
-            if (newSize > splitPaneWidth || newPosition < 0) {
-              newSize = splitPaneWidth;
-            }
-
             if (newPosition < resizerWidth) {
-              newPosition = resizerWidth;
+              newSize = splitPaneWidth;
             }
 
             if (newPosition > splitPaneWidth) {
               newPosition = splitPaneWidth;
             }
           } else {
-            if (newSize > splitPaneHeight || newPosition < 0) {
-              newSize = splitPaneHeight;
+            if (newSize > splitPaneHeight - minSize || newPosition < 0) {
+              newSize = splitPaneHeight - minSize;
             }
 
             if (newPosition < resizerHeight) {
               newPosition = resizerHeight;
+            }
+
+            if (newPosition < minSize) {
+              newPosition = minSize;
+            } else if (newPosition + minSize > splitPaneHeight) {
+              newPosition = splitPaneHeight - minSize;
             }
 
             if (newPosition > splitPaneHeight) {

@@ -16,12 +16,14 @@ class Resizer extends React.Component {
       resizerClassName,
       split,
       style,
+      eleRef,
     } = this.props;
     const classes = [resizerClassName, split, className];
 
     return (
       <span
         role="presentation"
+        ref={eleRef}
         className={classes.join(' ')}
         style={style}
         onMouseDown={(event) => onMouseDown(event)}
@@ -60,6 +62,7 @@ Resizer.propTypes = {
   split: PropTypes.oneOf(['vertical', 'horizontal']),
   style: stylePropType,
   resizerClassName: PropTypes.string.isRequired,
+  eleRef: PropTypes.func,
 };
 
 Resizer.defaultProps = {

@@ -131,22 +131,31 @@ class SplitPane extends React.Component {
         const node2 = ref2;
 
         if (node.getBoundingClientRect) {
-          const width = node.getBoundingClientRect().width;
-          const height = node.getBoundingClientRect().height;
+          const { width, height } = node.getBoundingClientRect();
+          const isVerticalSplit = split === 'vertical';
+
+          const {
+            width: resizerWidth,
+            height: resizerHeight,
+          } = this.resizerRef.getBoundingClientRect();
 
           const splitPane = this.splitPane;
-          const splitPaneWidth = splitPane.getBoundingClientRect().width;
+          const {
+            width: splitPaneWidth,
+            height: splitPaneHeight,
+          } = splitPane.getBoundingClientRect();
 
-          let current =
-            split === 'vertical'
-              ? event.touches[0].clientX
-              : event.touches[0].clientY;
+          let current = isVerticalSplit
+            ? event.touches[0].clientX
+            : event.touches[0].clientY;
 
-          if (split === 'vertical' && current > splitPaneWidth) {
+          if (isVerticalSplit && current > splitPaneWidth) {
             current = splitPaneWidth;
+          } else if (!isVerticalSplit && current > splitPaneHeight) {
+            current = splitPaneHeight;
           }
 
-          const size = split === 'vertical' ? width : height;
+          const size = isVerticalSplit ? width : height;
           let positionDelta = position - current;
           if (step) {
             if (Math.abs(positionDelta) < step) {
@@ -167,22 +176,40 @@ class SplitPane extends React.Component {
           let newMaxSize = maxSize;
 
           if (maxSize !== undefined && maxSize <= 0) {
-            if (split === 'vertical') {
-              newMaxSize = splitPane.getBoundingClientRect().width + maxSize;
+            if (isVerticalSplit) {
+              newMaxSize = splitPaneWidth + maxSize;
             } else {
-              newMaxSize = splitPane.getBoundingClientRect().height + maxSize;
+              newMaxSize = splitPaneHeight + maxSize;
             }
           }
 
           let newSize = size - sizeDelta;
           let newPosition = position - positionDelta;
 
-          if (newSize > splitPaneWidth || newPosition < 0) {
-            newSize = splitPaneWidth;
-          }
+          if (isVerticalSplit) {
+            if (newSize > splitPaneWidth || newPosition < 0) {
+              newSize = splitPaneWidth;
+            }
 
-          if (newPosition > splitPaneWidth) {
-            newPosition = splitPaneWidth;
+            if (newPosition < resizerWidth) {
+              newPosition = resizerWidth;
+            }
+
+            if (newPosition > splitPaneWidth) {
+              newPosition = splitPaneWidth;
+            }
+          } else {
+            if (newSize > splitPaneHeight || newPosition < 0) {
+              newSize = splitPaneHeight;
+            }
+
+            if (newPosition < resizerHeight) {
+              newPosition = resizerHeight;
+            }
+
+            if (newPosition > splitPaneHeight) {
+              newPosition = splitPaneHeight;
+            }
           }
 
           if (newSize < minSize) {
@@ -348,6 +375,9 @@ class SplitPane extends React.Component {
           resizerClassName={resizerClassNamesIncludingDefault}
           split={split}
           style={resizerStyle || {}}
+          eleRef={(node) => {
+            this.resizerRef = node;
+          }}
         />
         <Pane
           className={pane2Classes}

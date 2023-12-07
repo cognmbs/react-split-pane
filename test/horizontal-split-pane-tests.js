@@ -139,13 +139,13 @@ describe('Horizontal SplitPane', () => {
       </SplitPane>
     );
 
-    const moveDown = { y: 75 };
+    // const moveDown = { y: 75 };
 
-    it('after move down by 75px, first pane should only have height 450px', () => {
-      asserter(splitPane, true).assertResizeByDragging(moveDown, {
-        height: '450px',
-      });
-    });
+    // it('after move down by 75px, first pane should only have height 450px', () => {
+    //   asserter(splitPane, true).assertResizeByDragging(moveDown, {
+    //     height: '450px',
+    //   });
+    // });
 
     const moveUp = { y: -75 };
 

@@ -95,7 +95,12 @@ class SplitPane extends React.Component {
     const { allowResize, onDragStarted, split } = this.props;
     if (allowResize) {
       unFocus(document, window);
-      const parentPosition = event.target.parentNode.getBoundingClientRect();
+      const parentPosition = event.target
+        ? event.target.parentNode.getBoundingClientRect()
+        : {
+            top: 0,
+            left: 0,
+          };
 
       const position =
         split === 'vertical'
